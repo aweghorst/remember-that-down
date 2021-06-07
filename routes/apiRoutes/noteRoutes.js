@@ -1,5 +1,10 @@
 const router = require("express").Router();
-const { createNewNote, validateNote, findById } = require("../../lib/notes");
+const {
+  createNewNote,
+  validateNote,
+  findById,
+  deleteById,
+} = require("../../lib/notes");
 const { nanoid } = require("nanoid");
 const { notes } = require("../../db/db");
 
@@ -25,6 +30,17 @@ router.post("/notes", (req, res) => {
   } else {
     const note = createNewNote(req.body, notes);
     res.json(note);
+  }
+});
+
+router.delete("/notes/:id", (req, res) => {
+  const deletedId = req.params.id;
+  const noteExists = findById(deletedId, notes);
+  if (noteExists) {
+    const newNotes = deleteById(deletedId, notes);
+    res.json(newNotes);
+  } else {
+    res.send(404);
   }
 });
 
